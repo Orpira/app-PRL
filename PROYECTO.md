@@ -1,3 +1,13 @@
+# Actualización 15/04/2026
+
+## Correcciones y mejoras en modo práctica
+
+- Se corrigió la importación de `useState` en `StudyPractice.tsx`.
+- Se añadió control para mostrar mensaje si no hay preguntas.
+- Se mejoró la experiencia de usuario y la robustez del flujo de práctica.
+- Se validó la navegación y feedback visual según el modelo HTML.
+- Se documentaron los cambios y se subieron al repositorio remoto.
+
 # Documentación del Proyecto prl-app
 
 ## 1. Creación del Proyecto
@@ -53,17 +63,17 @@ Apareció el siguiente error:
 - Se integró Tailwind CSS en los archivos fuente de React:
   - Se añadió la importación de Tailwind en `src/index.css`:
 
-      @tailwind base;
-      @tailwind components;
-      @tailwind utilities;
+    @tailwind base;
+    @tailwind components;
+    @tailwind utilities;
 
   - Se verificó que el archivo `tailwind.config.js` incluyera las rutas correctas para analizar los archivos fuente:
 
-      content: ["./index.html", "./src/**/*.{ts,tsx}"]
+    content: ["./index.html", "./src/**/*.{ts,tsx}"]
 
   - Para utilizar las utilidades de Tailwind, basta con agregar clases en los componentes de React, por ejemplo:
 
-      <button className="bg-blue-500 text-white font-bold py-2 px-4 rounded">Botón Tailwind</button>
+    <button className="bg-blue-500 text-white font-bold py-2 px-4 rounded">Botón Tailwind</button>
 
 - Documentar cualquier otro cambio o adición relevante.
 

@@ -1,3 +1,16 @@
+# Cambios y mejoras recientes (15/04/2026)
+
+## Corrección de errores y mejoras en modo práctica
+
+- Se corrigió un error crítico en el componente `StudyPractice` donde faltaba la importación de `useState` desde React, lo que provocaba que la pantalla de práctica no funcionara.
+- Se añadió un mensaje de depuración para mostrar cuántas preguntas recibe el componente y evitar errores si el array está vacío.
+- Se mejoró la robustez del flujo de práctica para evitar bloqueos si no hay preguntas.
+- Se validó que la navegación y el feedback visual en modo práctica funcionan correctamente.
+
+## Estado actual
+
+La aplicación ahora permite practicar preguntas por categoría, mostrando feedback visual y navegación según el modelo HTML original. Todos los errores críticos detectados han sido corregidos y los cambios han sido subidos al repositorio remoto.
+
 # React + TypeScript + Vite
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
@@ -17,57 +30,57 @@ If you are developing a production application, we recommend updating the config
 
 ```js
 export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+	globalIgnores(["dist"]),
+	{
+		files: ["**/*.{ts,tsx}"],
+		extends: [
+			// Other configs...
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+			// Remove tseslint.configs.recommended and replace with this
+			tseslint.configs.recommendedTypeChecked,
+			// Alternatively, use this for stricter rules
+			tseslint.configs.strictTypeChecked,
+			// Optionally, add this for stylistic rules
+			tseslint.configs.stylisticTypeChecked,
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+			// Other configs...
+		],
+		languageOptions: {
+			parserOptions: {
+				project: ["./tsconfig.node.json", "./tsconfig.app.json"],
+				tsconfigRootDir: import.meta.dirname,
+			},
+			// other options...
+		},
+	},
+]);
 ```
 
 You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
 
 ```js
 // eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+import reactX from "eslint-plugin-react-x";
+import reactDom from "eslint-plugin-react-dom";
 
 export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+	globalIgnores(["dist"]),
+	{
+		files: ["**/*.{ts,tsx}"],
+		extends: [
+			// Other configs...
+			// Enable lint rules for React
+			reactX.configs["recommended-typescript"],
+			// Enable lint rules for React DOM
+			reactDom.configs.recommended,
+		],
+		languageOptions: {
+			parserOptions: {
+				project: ["./tsconfig.node.json", "./tsconfig.app.json"],
+				tsconfigRootDir: import.meta.dirname,
+			},
+			// other options...
+		},
+	},
+]);
 ```

@@ -1,3 +1,11 @@
+# Cambios 15/04/2026
+
+- Se corrigió el error `useState is not defined` en `StudyPractice.tsx`.
+- Se añadió manejo para mostrar mensaje si no hay preguntas en modo práctica.
+- Se mejoró la robustez del componente ante datos vacíos.
+- Se validó visualmente el flujo de práctica y feedback de selección.
+- Se subieron los cambios al repositorio remoto.
+
 # Registro de cambios y correcciones
 
 ## 1. Instalación de dependencias
