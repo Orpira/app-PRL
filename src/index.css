@@ -1,0 +1,86 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Extensiones y utilidades personalizadas para replicar el modelo visual */
+
+@layer components {
+	.sidebar {
+		@apply w-52 min-w-[200px] bg-[#0C1F3D] flex flex-col h-full;
+	}
+	.logo {
+		@apply px-4 pt-4 pb-3 border-b border-white/10;
+	}
+	.logo-title {
+		@apply text-white text-base font-semibold;
+	}
+	.logo-sub {
+		@apply text-white/40 text-xs mt-1;
+	}
+	.nav-item {
+		@apply flex items-center gap-2 px-4 py-2.5 text-white/50 text-xs cursor-pointer border-l-4 border-transparent transition-all;
+	}
+	.nav-item:hover {
+		@apply text-white bg-white/5;
+	}
+	.nav-item.active {
+		@apply text-white bg-[#B8941F]/20 border-l-[#B8941F];
+	}
+	.sidebar-footer {
+		@apply mt-auto px-4 py-2 border-t border-white/10 text-white/25 text-xs;
+	}
+	.main {
+		@apply flex-1 overflow-y-auto bg-gray-100 min-w-0;
+	}
+	.page {
+		@apply p-5;
+	}
+	.page-title {
+		@apply text-lg font-semibold text-gray-900;
+	}
+	.page-sub {
+		@apply text-xs text-gray-500 mt-1;
+	}
+	.card {
+		@apply bg-white border border-gray-200 rounded-xl p-4 shadow-sm;
+	}
+	.stat-card {
+		@apply bg-gray-50 rounded-lg p-3 text-center;
+	}
+	.stat-num {
+		@apply text-2xl font-semibold text-gray-900;
+	}
+	.stat-label {
+		@apply text-xs text-gray-500 mt-1;
+	}
+	.grid4 {
+		@apply grid grid-cols-4 gap-2.5 mb-4;
+	}
+	.grid2 {
+		@apply grid grid-cols-2 gap-3.5;
+	}
+	.btn {
+		@apply inline-flex items-center gap-1.5 px-3 py-2 rounded-md text-xs font-semibold cursor-pointer border border-gray-200 bg-white text-gray-900 transition-all;
+	}
+	.btn:hover {
+		@apply bg-gray-50;
+	}
+	.btn-primary {
+		@apply bg-[#0C1F3D] text-white border-[#0C1F3D];
+	}
+	.btn-primary:hover {
+		@apply bg-[#1B3A6B] border-[#1B3A6B];
+	}
+	.btn-gold {
+		@apply bg-[#B8941F] text-white border-[#B8941F];
+	}
+	.btn-gold:hover {
+		@apply opacity-90;
+	}
+	.btn-sm {
+		@apply px-2 py-1 text-[11px];
+	}
+	.cat-card {
+		@apply bg-white border border-gray-200 rounded-xl p-3 cursor-pointer transition-colors hover:border-[#0C1F3D];
+	}
+}
