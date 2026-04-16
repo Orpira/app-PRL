@@ -1,6 +1,9 @@
 import { THEORY } from "../../data/theory";
 import { QUESTIONS } from "../../data/questions";
 import Button from "../../components/Button";
+import { useAuthStore } from "../../store/useAuthStore";
+import { useContext } from "react";
+import { AppContext } from "../../context/AppContext";
 
 interface StudyCategoryProps {
 	cat: string;
@@ -36,13 +39,23 @@ export default function StudyCategory({
 	const theory = THEORY[cat as keyof typeof THEORY] || [];
 	const numPractice = QUESTIONS.filter((q) => q.cat === cat).length;
 	const icon = ICONS[cat] || "📚";
+	const user = useAuthStore((state) => state.user);
+	const appContext = useContext(AppContext);
 
 	return (
 		<div className="page">
 			<div className="flex items-center mb-2">
 				<button
 					className="text-gray-700 hover:underline mr-3 text-sm"
-					onClick={onBack}
+					onClick={() => {
+						if (!user && window.setPracticeQsGlobal)
+							window.setPracticeQsGlobal([]);
+						if (!user) {
+							appContext?.setView("welcome");
+						} else if (onBack) {
+							onBack();
+						}
+					}}
 					style={{ minWidth: 60 }}
 				>
 					← Volver

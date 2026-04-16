@@ -1,4 +1,7 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
+import { useAuthStore } from "../../store/useAuthStore";
+import { AppContext } from "../../context/AppContext";
+
 export default function StudyPractice({
 	questions,
 	onFinish,
@@ -10,6 +13,9 @@ export default function StudyPractice({
 	const [selected, setSelected] = useState<number | null>(null);
 	const [showResult, setShowResult] = useState(false);
 	const [finished, setFinished] = useState(false);
+	const [correctCount, setCorrectCount] = useState(0);
+	const user = useAuthStore((state) => state.user);
+	const appContext = useContext(AppContext);
 
 	// Debug: mostrar cuántas preguntas llegan
 	if (!questions || questions.length === 0) {
@@ -37,6 +43,7 @@ export default function StudyPractice({
 		if (showResult) return;
 		setSelected(i);
 		setShowResult(true);
+		if (i === q.r) setCorrectCount((c) => c + 1);
 	};
 
 	const handleNext = () => {
@@ -50,15 +57,27 @@ export default function StudyPractice({
 	};
 
 	if (finished) {
+		const total = questions.length;
+		const ok = correctCount;
+		const pct = Math.round((ok / total) * 100);
 		return (
 			<div className="page">
 				<div className="card mb-4">
 					<h2 className="text-lg font-semibold mb-4">Práctica finalizada</h2>
-					<p className="mb-6 text-gray-700">
-						Has completado todas las preguntas de práctica.
+					<p className="mb-2 text-gray-700">
+						Respuestas correctas: <b>{ok}</b> de <b>{total}</b>
 					</p>
-					<button className="btn btn-gold" onClick={onFinish}>
-						Volver a la teoría
+					<p className="mb-2 text-gray-700">
+						Porcentaje de acierto: <b>{pct}%</b>
+					</p>
+					<button
+						className="btn btn-gold mt-4"
+						onClick={() => {
+							if (user) appContext?.setView("home");
+							else appContext?.setView("welcome");
+						}}
+					>
+						Volver al inicio
 					</button>
 				</div>
 			</div>
@@ -70,7 +89,11 @@ export default function StudyPractice({
 			<div className="flex items-center mb-2">
 				<button
 					className="text-gray-700 hover:underline mr-3 text-sm"
-					onClick={onFinish}
+					onClick={() => {
+						if (!user && window.setPracticeQsGlobal)
+							window.setPracticeQsGlobal([]);
+						onFinish();
+					}}
 					style={{ minWidth: 60 }}
 				>
 					← Volver

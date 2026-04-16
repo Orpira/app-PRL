@@ -14,10 +14,6 @@ export default function Sidebar({ view, setView }: Props) {
 
 	return (
 		<div className="sidebar h-screen">
-			<div className="logo">
-				<div className="logo-title">PRL Master</div>
-				<div className="logo-sub">Prevención de Riesgos Laborales</div>
-			</div>
 			<div className="flex-1 py-2">
 				{items.map((item) => (
 					<div
