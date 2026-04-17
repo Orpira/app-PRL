@@ -42,3 +42,4 @@ export default function NavBar() {
 		</nav>
 	);
 }
+// ...eliminar return duplicado y limpiar estructura...

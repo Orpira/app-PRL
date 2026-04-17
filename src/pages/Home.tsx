@@ -94,7 +94,7 @@ export default function Home() {
 				<div className="page-sub mb-6">
 					Curso Básico de Prevención de Riesgos Laborales — Ley 31/1995
 				</div>
-				<div className="grid4 mb-6">
+				<div className="grid grid-cols-2 md:grid-cols-4 gap-2.5 mb-6">
 					<div className="stat-card">
 						<div className="stat-num">{stats.preguntas}</div>
 						<div className="stat-label">Preguntas</div>

@@ -1,6 +1,8 @@
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import { AppContext } from "../../context/AppContext";
 import { generateCertificate } from "../../shared/lib/generateCertificate";
+import { saveResult } from "../../store/saveResult";
+import { useAuthStore } from "../../store/useAuthStore";
 import type { Question } from "../../types";
 
 interface ExamResultProps {
@@ -24,7 +26,6 @@ export default function ExamResult({
 	questions,
 	answers,
 	userName,
-	// onRetry eliminado completamente
 }: ExamResultProps) {
 	const appContext = useContext(AppContext);
 	const setView = appContext?.setView ?? null;
@@ -36,6 +37,24 @@ export default function ExamResult({
 	const pct = Math.round((ok / tot) * 100);
 	const passed = pct >= 60;
 	const stats = getCategoryStats(questions, answers);
+
+	// Obtener usuario
+	const user = useAuthStore((state) => state.user);
+
+	// Guardar resultado en Supabase/localStorage solo una vez
+	useEffect(() => {
+		const result = {
+			ok,
+			total: tot,
+			pct,
+			passed,
+		};
+		// Solo si hay preguntas y respuestas
+		if (tot > 0 && answers.length === tot) {
+			saveResult(result, user?.id);
+		}
+		// eslint-disable-next-line
+	}, []);
 
 	return (
 		<div className="max-w-5xl mx-auto mt-8 flex flex-col items-center">

@@ -156,8 +156,7 @@ export default function Stats() {
 					</thead>
 					<tbody>
 						{data.map((r, i) => (
-							<tr key={r.id || `local-${i}`}>
-								{" "}
+							<tr key={r.id || `local-${i}`}> 
 								<td className="px-2 py-1 border text-center">{i + 1}</td>
 								<td className="px-2 py-1 border text-center">
 									{r.created_at

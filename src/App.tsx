@@ -1,5 +1,30 @@
 	// ...existing code...
 import { useState, useEffect } from "react";
+// Botón flotante para subir arriba
+function ScrollToTopButton() {
+	const [visible, setVisible] = useState(false);
+
+	useEffect(() => {
+		const onScroll = () => {
+			setVisible(window.scrollY > 200);
+		};
+		window.addEventListener("scroll", onScroll);
+		return () => window.removeEventListener("scroll", onScroll);
+	}, []);
+
+	if (!visible) return null;
+	return (
+		<button
+			onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+			className="fixed bottom-6 right-6 z-50 bg-[#0C1F3D] text-white p-3 rounded-full shadow-lg hover:bg-[#1B3A6B] transition-colors"
+			aria-label="Subir al inicio"
+		>
+			<svg width="24" height="24" fill="none" viewBox="0 0 24 24">
+				<path d="M12 19V5M5 12l7-7 7 7" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+			</svg>
+		</button>
+	);
+}
 import { supabase } from "./shared/lib/supabase";
 import Sidebar from "./components/Sidebar";
 import { AppContext } from "./context/AppContext";
@@ -141,22 +166,22 @@ export default function App() {
 									/>
 								)}
 								 {examStep === "exam" && (
-									 <ExamNavigator
-										 questions={examQuestions}
-										 onFinish={(ans) => {
-											 setExamAnswers(ans);
-											 setExamStep("result");
-											 if (!user) localStorage.setItem("explore_exam_done", "1");
-										 }}
-										 duration={examQuestions.length * 90}
-									 />
+										 <ExamNavigator
+												 questions={examQuestions}
+												 onFinish={(ans) => {
+														 setExamAnswers(ans);
+														 setExamStep("result");
+														 if (!user) localStorage.setItem("explore_exam_done", "1");
+												 }}
+												 duration={examQuestions.length * 90}
+										 />
 								 )}
 								 {examStep === "result" && (
-									 <ExamResult
-										 questions={examQuestions}
-										 answers={examAnswers}
-										 userName={examUserName}
-									 />
+										 <ExamResult
+												 questions={examQuestions}
+												 answers={examAnswers}
+												 userName={examUserName}
+										 />
 								 )}
 							</div>
 						)}
@@ -164,6 +189,7 @@ export default function App() {
 						{view === "chat" && user && <Chat />}
 						{view === "stats" && <Stats />}
 					</main>
+					<ScrollToTopButton />
 				</div>
 			)}
 			{/* Footer profesional */}
