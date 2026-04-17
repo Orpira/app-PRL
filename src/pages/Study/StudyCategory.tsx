@@ -2,8 +2,11 @@ import { THEORY } from "../../data/theory";
 import { QUESTIONS } from "../../data/questions";
 import Button from "../../components/Button";
 import { useAuthStore } from "../../store/useAuthStore";
+
 import { useContext } from "react";
 import { AppContext } from "../../context/AppContext";
+
+
 
 interface StudyCategoryProps {
 	cat: string;

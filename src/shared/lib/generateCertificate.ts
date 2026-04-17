@@ -35,10 +35,10 @@ export function generateCertificate(
 
 	// Nombre en itálica
 	doc.setFontSize(16);
-	doc.setFont(undefined, "italic");
+	doc.setFont("", "italic");
 	doc.setTextColor(24, 28, 68);
 	doc.text(name, 105, 80, { align: "center" });
-	doc.setFont(undefined, "normal");
+	doc.setFont("", "normal");
 
 	// Texto de logro
 	doc.setFontSize(11);

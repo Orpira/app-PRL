@@ -1,6 +1,15 @@
+
 import { useState, useContext } from "react";
 import { useAuthStore } from "../../store/useAuthStore";
 import { AppContext } from "../../context/AppContext";
+
+// Definición del tipo Question
+type Question = {
+	q: string; // pregunta
+	ops: string[]; // opciones
+	r: number; // índice de la respuesta correcta
+	cat?: string; // categoría (opcional)
+};
 
 export default function StudyPractice({
 	questions,

@@ -78,7 +78,7 @@ export const useAuthStore = create<AuthState>(
 
 		register: async (email: string, password: string) => {
 			set({ loading: true });
-			const { data, error } = await supabase.auth.signUp({ email, password });
+			const { error } = await supabase.auth.signUp({ email, password });
 			set({ loading: false });
 			if (error) throw error;
 			// No crear perfil aquí, solo tras login exitoso

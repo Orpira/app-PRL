@@ -13,3 +13,11 @@ export interface ExamResult {
 	p: boolean;
 	date: string;
 }
+
+declare global {
+  interface Window {
+    practiceQsGlobal?: any;
+    setPracticeQsGlobal?: any;
+  }
+}
+export {};

@@ -1,4 +1,6 @@
 import { useContext, useState, useEffect } from "react";
+
+
 import { AppContext } from "../../context/AppContext";
 import { QUESTIONS } from "../../data/questions";
 
@@ -20,7 +22,7 @@ export default function StudyIndex({
 	useEffect(() => {
 		const checkPracticeQs = () => {
 			setHasPracticeQs(
-				window.practiceQsGlobal && window.practiceQsGlobal.length > 0,
+				Array.isArray(window.practiceQsGlobal) && window.practiceQsGlobal.length > 0,
 			);
 		};
 		window.addEventListener("practiceQsChange", checkPracticeQs);
