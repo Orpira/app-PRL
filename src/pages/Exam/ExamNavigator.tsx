@@ -3,6 +3,8 @@ import ExamQuestion from "./ExamQuestion";
 import Button from "../../components/Button";
 import ProgressBar from "../../components/ProgressBar";
 
+import type { Question } from "../../types";
+
 interface ExamNavigatorProps {
 	questions: Question[];
 	onFinish: (answers: (number | null)[]) => void;

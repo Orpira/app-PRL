@@ -18,6 +18,16 @@ declare global {
   interface Window {
     practiceQsGlobal?: any;
     setPracticeQsGlobal?: any;
+    setStudyCatGlobal?: any;
+  }
+}
+
+export {};
+
+declare global {
+  interface Window {
+    practiceQsGlobal?: any;
+    setPracticeQsGlobal?: any;
   }
 }
 export {};

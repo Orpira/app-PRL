@@ -1,4 +1,4 @@
-import Card from "../components/Card";
+// import Card from "../components/Card"; // No usado
 import { QUESTIONS } from "../data/questions";
 import { THEORY } from "../data/theory";
 import { useContext, useEffect, useState } from "react";
@@ -22,10 +22,8 @@ export default function Home() {
 	const [exploreDone, setExploreDone] = useState(
 		Boolean(localStorage.getItem("explore_exam_done")),
 	);
-	const [loadingStats, setLoadingStats] = useState(false);
 
 	// Permitir acceso a setLoginMessage de App
-	// @ts-ignore
 	const setLoginMessage = appContext?.setLoginMessage;
 
 	useEffect(() => {
@@ -38,17 +36,15 @@ export default function Home() {
 			let mejor = 0;
 			if (local.length > 0) {
 				media = Math.round(
-					local.reduce((acc, r) => acc + (r.percentage || 0), 0) / local.length,
+					local.reduce((acc: number, r: any) => acc + (r.percentage || 0), 0) / local.length,
 				);
-				mejor = Math.max(...local.map((r) => r.percentage || 0));
+				mejor = Math.max(...local.map((r: any) => r.percentage || 0));
 			}
 			setGuestStats({ examenes, media, mejor });
 			setExploreDone(Boolean(localStorage.getItem("explore_exam_done")));
 		} else if (user.id) {
-			setLoadingStats(true);
 			getUserStats(user.id)
-				.then(setUserStats)
-				.finally(() => setLoadingStats(false));
+				.then(setUserStats);
 		}
 	}, [user, appContext]);
 

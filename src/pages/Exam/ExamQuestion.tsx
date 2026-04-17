@@ -31,7 +31,7 @@ export default function ExamQuestion({
 						key={i}
 						onClick={() => handleSelect(i)}
 						className={optClass + " mb-2"}
-						style={{ pointerEvents: false }}
+						style={{ pointerEvents: selected !== null ? "none" : "auto" }}
 					>
 						<span className="opt-l">{String.fromCharCode(65 + i)}</span>
 						<span>{op}</span>

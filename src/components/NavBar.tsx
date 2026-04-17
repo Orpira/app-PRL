@@ -6,7 +6,8 @@ export default function NavBar() {
 	const user = useAuthStore((state) => state.user);
 	const logout = useAuthStore((state) => state.logout);
 	const [loading, setLoading] = useState(false);
-	const { setView } = useContext(AppContext);
+	const appContext = useContext(AppContext);
+	const setView = appContext && "setView" in appContext ? appContext.setView : undefined;
 	// Acceso a setters globales si existen
 	const setPracticeQs = window.setPracticeQsGlobal;
 	const setStudyCat = window.setStudyCatGlobal;
@@ -19,7 +20,7 @@ export default function NavBar() {
 		setLoading(false);
 		if (setPracticeQs) setPracticeQs([]);
 		if (setStudyCat) setStudyCat(null);
-		setView("welcome");
+		if (setView) setView("welcome");
 	};
 
 	return (

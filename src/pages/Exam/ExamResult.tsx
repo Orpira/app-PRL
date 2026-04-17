@@ -1,15 +1,16 @@
 import { useContext } from "react";
 import { AppContext } from "../../context/AppContext";
-import { QUESTIONS } from "../../data/questions";
 import { generateCertificate } from "../../shared/lib/generateCertificate";
+import type { Question } from "../../types";
 
 interface ExamResultProps {
-	questions: any[];
+	questions: Question[];
 	answers: (number | null)[];
 	userName: string;
+	// onRetry eliminado completamente
 }
 
-function getCategoryStats(questions: any[], answers: (number | null)[]) {
+function getCategoryStats(questions: Question[], answers: (number | null)[]) {
 	const stats: Record<string, { total: number; correct: number }> = {};
 	questions.forEach((q, i) => {
 		if (!stats[q.cat]) stats[q.cat] = { total: 0, correct: 0 };
@@ -23,16 +24,10 @@ export default function ExamResult({
 	questions,
 	answers,
 	userName,
-	// Nuevo: props para reiniciar examen
-	onRetry,
-}: ExamResultProps & {
-	onRetry?: (name: string, numQuestions: number) => void;
-}) {
-	// Obtener setView del contexto global
-	let setView: ((v: string) => void) | null = null;
-	try {
-		setView = useContext(AppContext)?.setView;
-	} catch {}
+	// onRetry eliminado completamente
+}: ExamResultProps) {
+	const appContext = useContext(AppContext);
+	const setView = appContext?.setView ?? null;
 	const ok = questions.reduce(
 		(acc, q, i) => acc + (answers[i] === q.r ? 1 : 0),
 		0,

@@ -1,3 +1,4 @@
+	// ...existing code...
 import { useState, useEffect } from "react";
 import { supabase } from "./shared/lib/supabase";
 import Sidebar from "./components/Sidebar";
@@ -14,7 +15,7 @@ import StudyPractice from "./pages/Study/StudyPractice";
 import ExamSetup from "./pages/Exam/ExamSetup";
 import ExamNavigator from "./pages/Exam/ExamNavigator";
 import ExamResult from "./pages/Exam/ExamResult";
-import { saveResult } from "./store/saveResult";
+// import { saveResult } from "./store/saveResult"; // No usado
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Navbar from "./components/NavBar";
@@ -31,17 +32,13 @@ export default function App() {
 	const [examAnswers, setExamAnswers] = useState<(number | null)[]>([]);
 	const [examUserName, setExamUserName] = useState("");
 	const user = useAuthStore((state) => state.user);
-	const [loginMessage, setLoginMessage] = useState<string | null>(null);
-	const login = useAuthStore((state) => state.login);
-	const [loginEmail, setLoginEmail] = useState("");
-	const [loginPassword, setLoginPassword] = useState("");
-	const [loginLoading, setLoginLoading] = useState(false);
-	const [examError, setExamError] = useState<string | null>(null);
+	// loginMessage eliminado porque no se usa
+	// Eliminados: login, loginEmail, loginPassword, loginLoading, examError
 	const setUser = useAuthStore((state) => state.setUser);
 
 	// Restaurar sesión al montar la app
 	useEffect(() => {
-		supabase.auth.getUser().then(({ data, error }) => {
+		 supabase.auth.getUser().then(({ data }) => {
 			if (data?.user) {
 				setUser(data.user);
 				// Si la vista es welcome, login o register, ir a home
@@ -53,32 +50,10 @@ export default function App() {
 	}, [setUser]);
 
 	const goToLogin = () => {
-		setLoginMessage(null);
 		setView("login");
 	};
-	const goToWelcome = () => {
-		setLoginMessage(null);
-		setView("welcome");
-	};
 	const goToHome = () => {
-		setLoginMessage(null);
 		setView("home");
-	};
-
-	const handleLogin = async (e: React.FormEvent) => {
-		e.preventDefault();
-		setLoginLoading(true);
-		setLoginMessage(null);
-		try {
-			await login(loginEmail, loginPassword);
-			setLoginEmail("");
-			setLoginPassword("");
-			setView("home");
-		} catch (err: any) {
-			setLoginMessage("Error de autenticación. Verifica tus datos.");
-		} finally {
-			setLoginLoading(false);
-		}
 	};
 
 	// Exponer setters globales para limpiar al cerrar sesión
@@ -100,7 +75,7 @@ export default function App() {
 	}, [user, view]);
 
 	return (
-		<AppContext.Provider value={{ setView, setLoginMessage }}>
+		<AppContext.Provider value={{ setView }}>
 			{/* Navbar visible solo si hay usuario autenticado */}
 			<Navbar />
 			{/* Flujo de bienvenida, login, registro y explorar */}
@@ -155,9 +130,7 @@ export default function App() {
 									<ExamSetup
 										onStart={({ name, questions }) => {
 											if (!user && localStorage.getItem("explore_exam_done")) {
-												setLoginMessage(
-													"Solo puedes realizar un examen en modo explorar. Regístrate para más.",
-												);
+												// Mensaje de login eliminado
 												setView("login");
 												return;
 											}
@@ -167,57 +140,24 @@ export default function App() {
 										}}
 									/>
 								)}
-								{examStep === "exam" && (
-									<ExamNavigator
-										questions={examQuestions}
-										onFinish={async (ans) => {
-											const ok = examQuestions.reduce(
-												(acc, q, i) => acc + (ans[i] === q.r ? 1 : 0),
-												0,
-											);
-											const total = examQuestions.length;
-											const pct = Math.round((ok / total) * 100);
-											const passed = pct >= 60;
-											setExamError(null);
-											try {
-												await saveResult({ ok, total, pct, passed }, user?.id);
-											} catch (err: any) {
-												setExamError(
-													"Error al guardar el resultado. Intenta de nuevo o contacta soporte. " +
-														(err?.message || ""),
-												);
-												return;
-											}
-											setExamAnswers(ans);
-											setExamStep("result");
-											if (!user) localStorage.setItem("explore_exam_done", "1");
-										}}
-										duration={examQuestions.length * 90}
-									/>
-								)}
-								{examStep === "result" && (
-									<ExamResult
-										questions={examQuestions}
-										answers={examAnswers}
-										userName={examUserName}
-										onRetry={(name, numQuestions) => {
-											if (!user) {
-												setLoginMessage(
-													"Solo puedes realizar un examen en modo explorar. Regístrate para más.",
-												);
-												setView("login");
-												return;
-											}
-											const shuffled = [...QUESTIONS]
-												.sort(() => Math.random() - 0.5)
-												.slice(0, numQuestions);
-											setExamUserName(name);
-											setExamQuestions(shuffled);
-											setExamAnswers([]);
-											setExamStep("exam");
-										}}
-									/>
-								)}
+								 {examStep === "exam" && (
+									 <ExamNavigator
+										 questions={examQuestions}
+										 onFinish={(ans) => {
+											 setExamAnswers(ans);
+											 setExamStep("result");
+											 if (!user) localStorage.setItem("explore_exam_done", "1");
+										 }}
+										 duration={examQuestions.length * 90}
+									 />
+								 )}
+								 {examStep === "result" && (
+									 <ExamResult
+										 questions={examQuestions}
+										 answers={examAnswers}
+										 userName={examUserName}
+									 />
+								 )}
 							</div>
 						)}
 						{/* Asistente IA solo para usuarios autenticados */}

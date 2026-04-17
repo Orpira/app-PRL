@@ -1,5 +1,6 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
 import { useAuthStore } from "../store/useAuthStore";
+import { AppContext } from "../context/AppContext";
 
 export default function Register() {
 	const register = useAuthStore((state) => state.register);
@@ -9,6 +10,8 @@ export default function Register() {
 	const [confirmPassword, setConfirmPassword] = useState("");
 	const [error, setError] = useState<string | null>(null);
 	const [success, setSuccess] = useState(false);
+	const appContext = useContext(AppContext);
+	const setView = appContext?.setView;
 
 	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault();
@@ -71,7 +74,10 @@ export default function Register() {
 						</button>
 						<button
 							className="btn btn-gold flex-1"
-							onClick={() => window.location.reload() || setView?.("welcome")}
+							onClick={() => {
+								window.location.reload();
+								setView && setView("welcome");
+							}}
 							type="button"
 						>
 							Cancelar

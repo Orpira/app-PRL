@@ -9,7 +9,8 @@ export default function Login() {
 	const [password, setPassword] = useState("");
 	const [error, setError] = useState<string | null>(null);
 	const [success, setSuccess] = useState(false);
-	const { setView } = useContext(AppContext);
+	const appContext = useContext(AppContext);
+	const setView = appContext?.setView;
 
 	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault();
@@ -18,7 +19,7 @@ export default function Login() {
 		try {
 			await login(email, password);
 			setSuccess(true);
-			setTimeout(() => setView("home"), 1200);
+			if (setView) setTimeout(() => setView("home"), 1200);
 		} catch (err: any) {
 			setError("Credenciales incorrectas o error de autenticación.");
 		}
@@ -57,7 +58,7 @@ export default function Login() {
 						</button>
 						<button
 							className="btn btn-gold flex-1"
-							onClick={() => setView("welcome")}
+							onClick={() => setView && setView("welcome")}
 							type="button"
 						>
 							Cancelar
