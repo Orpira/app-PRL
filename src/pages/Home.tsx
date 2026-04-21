@@ -5,6 +5,43 @@ import { useContext, useEffect, useState } from "react";
 import { AppContext } from "../context/AppContext";
 import { useAuthStore } from "../store/useAuthStore";
 import { getUserStats } from "../store/getUserStats";
+import { 
+	FaGavel, FaClipboardCheck, FaHardHat, FaExclamationTriangle, FaUserShield, FaUsers, FaRegFileAlt, FaChalkboardTeacher, FaStethoscope, FaAmbulance, FaFireExtinguisher, FaFlask, FaBiohazard, FaBolt, FaCogs, FaBalanceScale, FaBaby, FaBuilding, FaHandshake, FaClock, FaBrain, FaBook, FaTools, FaSitemap, FaUserNurse, FaWarehouse
+} from "react-icons/fa";
+// Mapeo de categorías a iconos
+const categoryIcons: Record<string, React.ReactElement> = {
+	"Ley 31/1995 LPRL": <FaGavel className="text-[#0C1F3D]" />,
+	"Evaluación de Riesgos": <FaClipboardCheck className="text-[#0C1F3D]" />,
+	"Equipos de Protección": <FaHardHat className="text-[#0C1F3D]" />,
+	"Señalización": <FaExclamationTriangle className="text-[#0C1F3D]" />,
+	"Delegados de Prevención": <FaUserShield className="text-[#0C1F3D]" />,
+	"Comité de Seguridad": <FaUsers className="text-[#0C1F3D]" />,
+	"Plan de Prevención": <FaRegFileAlt className="text-[#0C1F3D]" />,
+	"Formación": <FaChalkboardTeacher className="text-[#0C1F3D]" />,
+	"Servicios de Prevención": <FaStethoscope className="text-[#0C1F3D]" />,
+	"Accidente de Trabajo": <FaAmbulance className="text-[#0C1F3D]" />,
+	"Enfermedades Profesionales": <FaFireExtinguisher className="text-[#0C1F3D]" />,
+	"Riesgos Químicos": <FaFlask className="text-[#0C1F3D]" />,
+	"Riesgos Biológicos": <FaBiohazard className="text-[#0C1F3D]" />,
+	"Riesgos Físicos": <FaBolt className="text-[#0C1F3D]" />,
+	"Riesgos Ergonómicos": <FaCogs className="text-[#0C1F3D]" />,
+	"Riesgos Psicosociales": <FaBrain className="text-[#0C1F3D]" />,
+	"Incendios": <FaFireExtinguisher className="text-[#0C1F3D]" />,
+	"Primeros Auxilios": <FaAmbulance className="text-[#0C1F3D]" />,
+	"Lugares de Trabajo": <FaBuilding className="text-[#0C1F3D]" />,
+	"Trabajos Especiales": <FaTools className="text-[#0C1F3D]" />,
+	"Coordinación de Actividades": <FaSitemap className="text-[#0C1F3D]" />,
+	"Construcción": <FaHardHat className="text-[#0C1F3D]" />,
+	"Responsabilidades y Sanciones": <FaBalanceScale className="text-[#0C1F3D]" />,
+	"Vigilancia de la Salud": <FaUserNurse className="text-[#0C1F3D]" />,
+	"Emergencias": <FaExclamationTriangle className="text-[#0C1F3D]" />,
+	"Riesgos Eléctricos": <FaBolt className="text-[#0C1F3D]" />,
+	"Manipulación Manual de Cargas": <FaWarehouse className="text-[#0C1F3D]" />,
+	"Trabajadoras Embarazadas": <FaBaby className="text-[#0C1F3D]" />,
+	"Subcontratación": <FaHandshake className="text-[#0C1F3D]" />,
+	"Trabajo a Turnos": <FaClock className="text-[#0C1F3D]" />,
+	"Cultura Preventiva": <FaBook className="text-[#0C1F3D]" />,
+};
 
 export default function Home() {
 	const appContext = useContext(AppContext);
@@ -94,56 +131,70 @@ export default function Home() {
 				<div className="page-sub mb-6">
 					Curso Básico de Prevención de Riesgos Laborales — Ley 31/1995
 				</div>
-				<div className="grid grid-cols-2 md:grid-cols-4 gap-2.5 mb-6">
-					<div className="stat-card">
-						<div className="stat-num">{stats.preguntas}</div>
-						<div className="stat-label">Preguntas</div>
-					</div>
-					<div className="stat-card">
-						<div className="stat-num">{stats.examenes}</div>
-						<div className="stat-label">Exámenes realizados</div>
-					</div>
-					<div className="stat-card">
-						<div className="stat-num">{stats.media}%</div>
-						<div className="stat-label">Puntuación media</div>
-					</div>
-					<div className="stat-card">
-						<div className="stat-num">{stats.mejor}%</div>
-						<div className="stat-label">Mejor resultado</div>
-					</div>
-				</div>
+								<div className="grid grid-cols-2 md:grid-cols-4 gap-2.5 mb-6">
+										<div className="stat-card">
+												<div className="stat-num">{stats.preguntas}</div>
+												<div className="stat-label">Preguntas</div>
+										</div>
+										<div className="stat-card">
+												<div className="stat-num">{stats.examenes}</div>
+												<div className="stat-label">Exámenes realizados</div>
+										</div>
+										<div className="stat-card">
+												<div className="stat-num">{stats.media}%</div>
+												<div className="stat-label">Puntuación media</div>
+										</div>
+										<div className="stat-card">
+												<div className="stat-num">{stats.mejor}%</div>
+												<div className="stat-label">Mejor resultado</div>
+										</div>
+								</div>
 
-				<div className="mb-8">
-					<div className="mb-2 font-medium text-center">Accesos rápidos</div>
-					<div className="flex flex-col gap-2 max-w-xs mx-auto items-center">
-						<button
-							className="btn btn-primary w-full"
-							onClick={() => appContext?.setView("study")}
-						>
-							Iniciar modo estudio
-						</button>
-						<button className="btn btn-gold w-full" onClick={handleExamClick}>
-							Realizar examen
-						</button>
-						{user && (
-							<button
-								className="btn w-full"
-								onClick={() => appContext?.setView("chat")}
-							>
-								Consultar al asistente IA
-							</button>
-						)}
-						{/* Botón para regresar a welcome solo en modo demo */}
-						{!user && (
-							<button
-								className="btn btn-outline mt-2 w-full"
-								onClick={() => appContext?.setView("welcome")}
-							>
-								Volver al inicio
-							</button>
-						)}
-					</div>
-				</div>
+
+								<div className="mb-8">
+									<div className="mb-2 font-medium text-center">Accesos rápidos</div>
+									<div className="flex flex-col gap-2 max-w-xs mx-auto items-center">
+										<button
+											className="btn btn-primary w-full"
+											onClick={() => appContext?.setView("study")}
+										>
+											Iniciar modo estudio
+										</button>
+										<button className="btn btn-gold w-full" onClick={handleExamClick}>
+											Realizar examen
+										</button>
+										<button
+											className="btn btn-outline w-full"
+											onClick={() => {
+												if (!user) {
+													localStorage.removeItem("exam_results_local");
+													setGuestStats({ examenes: 0, media: 0, mejor: 0 });
+												} else {
+													alert("Funcionalidad de reset para usuarios registrados no implementada. Ve a la pantalla de estadísticas para resetear tus datos.");
+												}
+											}}
+										>
+											Resetear estadísticas
+										</button>
+										{user && (
+											<button
+												className="btn w-full"
+												onClick={() => appContext?.setView("chat")}
+											>
+												Consultar al asistente IA
+											</button>
+										)}
+										{/* Botón para regresar a welcome solo en modo demo */}
+										{!user && (
+											<button
+												className="btn btn-outline mt-2 w-full"
+												onClick={() => appContext?.setView("welcome")}
+											>
+												Volver al inicio
+											</button>
+										)}
+									</div>
+								</div>
 			</div>
 
 			{/* Temario a la derecha */}
@@ -156,10 +207,10 @@ export default function Home() {
 						!user && i >= 4 ? null : (
 							<span
 								key={cat}
-								className="inline-flex items-center gap-1 px-2 py-1 rounded bg-gray-100 text-xs text-gray-800 border border-gray-200"
+								className="inline-flex items-center gap-2 px-2 py-1 rounded bg-gray-100 text-xs text-gray-800 border border-gray-200"
 								title={cat}
 							>
-								{cat}
+								{categoryIcons[cat] || <FaBook className="text-[#0C1F3D]" />} {cat}
 							</span>
 						),
 					)}

@@ -1,4 +1,4 @@
-import { useContext, useEffect } from "react";
+import { useContext, useEffect, useRef } from "react";
 import { AppContext } from "../../context/AppContext";
 import { generateCertificate } from "../../shared/lib/generateCertificate";
 import { saveResult } from "../../store/saveResult";
@@ -42,19 +42,23 @@ export default function ExamResult({
 	const user = useAuthStore((state) => state.user);
 
 	// Guardar resultado en Supabase/localStorage solo una vez
+	const savedRef = useRef(false);
 	useEffect(() => {
+		if (savedRef.current) return;
 		const result = {
-			ok,
-			total: tot,
-			pct,
-			passed,
+		ok,
+		total: tot,
+		pct,
+		passed,
+		// ...otros campos si es necesario
 		};
 		// Solo si hay preguntas y respuestas
 		if (tot > 0 && answers.length === tot) {
 			saveResult(result, user?.id);
+			savedRef.current = true;
 		}
 		// eslint-disable-next-line
-	}, []);
+	}, [ok, tot, pct, passed, answers, user]);
 
 	return (
 		<div className="max-w-5xl mx-auto mt-8 flex flex-col items-center">

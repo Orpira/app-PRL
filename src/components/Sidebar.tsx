@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useAuthStore } from "../store/useAuthStore";
 
 interface Props {
 	view: string;
@@ -6,12 +7,17 @@ interface Props {
 }
 
 export default function Sidebar({ view, setView }: Props) {
+	const user = useAuthStore((state) => state.user);
 	const items = [
 		{ id: "home", label: "Inicio", icon: "▤" },
 		{ id: "study", label: "Modo Estudio", icon: "◈" },
 		{ id: "exam", label: "Examen", icon: "◉" },
 		{ id: "chat", label: "Asistente IA", icon: "◎" },
 		{ id: "stats", label: "Estadísticas", icon: "◍" },
+		// Solo admins pueden ver el panel de administración
+		...(user?.role === "admin"
+			? [{ id: "admin", label: "Administración", icon: "⚙️" }]
+			: []),
 	];
 
 	const [open, setOpen] = useState(false);

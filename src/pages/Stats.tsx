@@ -15,6 +15,8 @@ export default function Stats() {
 	const [data, setData] = useState<any[]>([]);
 	const [loading, setLoading] = useState(true);
 	const [statsError, setStatsError] = useState<string | null>(null);
+	const [resetMsg, setResetMsg] = useState<string | null>(null);
+	const [showConfirm, setShowConfirm] = useState(false);
 	const appContext = useContext(AppContext);
 	const user = useAuthStore((state) => state.user);
 
@@ -103,6 +105,60 @@ export default function Stats() {
 			<div className="mb-8 text-gray-700">
 				Seguimiento de tu progreso y rendimiento
 			</div>
+
+						<div className="flex justify-end mb-4">
+							<button
+								className="btn btn-outline btn-sm"
+								onClick={() => {
+									if (!user) {
+										localStorage.removeItem("exam_results_local");
+										setData([]);
+										setResetMsg("¡Estadísticas locales borradas correctamente!");
+										setTimeout(() => setResetMsg(null), 3000);
+									} else {
+										setShowConfirm(true);
+									}
+								}}
+							>
+								Resetear estadísticas
+							</button>
+							{resetMsg && (
+								<div className="mt-2 text-green-700 bg-green-100 border border-green-200 rounded px-3 py-2 text-sm text-center">
+									{resetMsg}
+								</div>
+							)}
+							{showConfirm && (
+								<div className="fixed inset-0 flex items-center justify-center bg-black/30 z-50">
+									<div className="bg-white p-6 rounded shadow max-w-xs w-full border">
+										<div className="mb-4 text-gray-800 font-semibold">¿Seguro que deseas borrar todas tus estadísticas?</div>
+										<div className="mb-4 text-gray-600 text-sm">Esta acción no se puede deshacer.</div>
+										<div className="flex gap-2 justify-end">
+											<button className="btn btn-outline btn-sm" onClick={() => setShowConfirm(false)}>Cancelar</button>
+											<button
+												className="btn btn-gold btn-sm"
+												onClick={async () => {
+													setShowConfirm(false);
+													const { error } = await supabase
+														.from("exam_results")
+														.delete()
+														.eq("user_id", user.id);
+													if (error) {
+														setResetMsg("Error al borrar estadísticas: " + (error.message || error));
+														setTimeout(() => setResetMsg(null), 4000);
+														return;
+													}
+													setData([]);
+													setResetMsg("¡Estadísticas borradas correctamente!");
+													setTimeout(() => setResetMsg(null), 3000);
+												}}
+											>
+												Borrar
+											</button>
+										</div>
+									</div>
+								</div>
+							)}
+						</div>
 
 			<div className="grid grid-cols-4 gap-4 mb-8 text-center">
 				<div>

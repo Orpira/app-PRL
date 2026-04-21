@@ -40,6 +40,8 @@ import StudyPractice from "./pages/Study/StudyPractice";
 import ExamSetup from "./pages/Exam/ExamSetup";
 import ExamNavigator from "./pages/Exam/ExamNavigator";
 import ExamResult from "./pages/Exam/ExamResult";
+import AdminPanel from "./pages/Admin/AdminPanel";
+import { AdminRouteGuard } from "./pages/Admin/routeGuard";
 // import { saveResult } from "./store/saveResult"; // No usado
 import Login from "./pages/Login";
 import Register from "./pages/Register";
@@ -135,11 +137,11 @@ export default function App() {
 							<StudyCategory
 								cat={studyCat}
 								onPractice={() => {
-									const allQs = QUESTIONS.filter((q) => q.cat === studyCat);
-									const qs = !user ? allQs.slice(0, 5) : allQs;
-									setPracticeQs(qs);
-								}}
-								onBack={() => setStudyCat(null)}
+								const allQs = QUESTIONS.filter((q) => q.cat === studyCat);
+								const qs = !user ? allQs.slice(0, 5) : allQs;
+								setPracticeQs(qs);
+							}}
+							onBack={() => setStudyCat(null)}
 							/>
 						)}
 						{view === "study" && studyCat && practiceQs.length > 0 && (
@@ -154,44 +156,50 @@ export default function App() {
 								{examStep === "setup" && (
 									<ExamSetup
 										onStart={({ name, questions }) => {
-											if (!user && localStorage.getItem("explore_exam_done")) {
-												// Mensaje de login eliminado
-												setView("login");
-												return;
-											}
-											setExamUserName(name);
-											setExamQuestions(questions);
-											setExamStep("exam");
-										}}
-									/>
+										if (!user && localStorage.getItem("explore_exam_done")) {
+											// Mensaje de login eliminado
+											setView("login");
+											return;
+										}
+										setExamUserName(name);
+										setExamQuestions(questions);
+										setExamStep("exam");
+									}}
+								/>
 								)}
 								 {examStep === "exam" && (
-										 <ExamNavigator
-												 questions={examQuestions}
-												 onFinish={(ans) => {
-														 setExamAnswers(ans);
-														 setExamStep("result");
-														 if (!user) localStorage.setItem("explore_exam_done", "1");
-												 }}
-												 duration={examQuestions.length * 90}
-										 />
+									 <ExamNavigator
+										 questions={examQuestions}
+										 onFinish={(ans) => {
+											 setExamAnswers(ans);
+											 setExamStep("result");
+											 if (!user) localStorage.setItem("explore_exam_done", "1");
+										}}
+										 duration={examQuestions.length * 90}
+									 />
 								 )}
 								 {examStep === "result" && (
-										 <ExamResult
-												 questions={examQuestions}
-												 answers={examAnswers}
-												 userName={examUserName}
-										 />
+									 <ExamResult
+										 questions={examQuestions}
+										 answers={examAnswers}
+										 userName={examUserName}
+									 />
 								 )}
 							</div>
 						)}
 						{/* Asistente IA solo para usuarios autenticados */}
 						{view === "chat" && user && <Chat />}
 						{view === "stats" && <Stats />}
-					</main>
-					<ScrollToTopButton />
-				</div>
-			)}
+						{/* Panel de administración solo para admins */}
+						{view === "admin" && user?.role === "admin" && (
+							<AdminRouteGuard>
+								<AdminPanel />
+							</AdminRouteGuard>
+						)}
+				</main>
+				<ScrollToTopButton />
+			</div>
+		)}
 			{/* Footer profesional */}
 			<Footer />
 		</AppContext.Provider>

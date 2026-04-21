@@ -2,11 +2,12 @@
 import { create } from "zustand";
 import { supabase } from "../shared/lib/supabase";
 
+import type { UserRole } from "../types";
 interface AuthState {
 	user: any;
 	loading: boolean;
 	login: (email: string, password: string) => Promise<void>;
-	register: (email: string, password: string) => Promise<void>;
+	register: (email: string, password: string, role?: UserRole) => Promise<void>;
 	logout: () => Promise<void>;
 	setUser: (user: any) => void;
 }
@@ -26,46 +27,37 @@ export const useAuthStore = create<AuthState>(
 			});
 			set({ loading: false });
 			if (error) throw error;
+			// Obtener perfil y rol
 			set({ user: data.user });
-
-			// Crear perfil si no existe
 			if (data.user) {
 				try {
 					const { data: profile, error: profileError } = await supabase
 						.from("profiles")
-						.select("id")
+						.select("id, email, role")
 						.eq("id", data.user.id)
 						.single();
-
-					console.log("DEBUG profile:", profile, "profileError:", profileError);
+					if (profile) {
+						set({ user: { ...data.user, role: profile.role || "user" } });
+					}
 					if (profileError) {
 						if (profileError.code === "PGRST116") {
-							// Solo crear si el error es que no existe
-							console.log(
-								"Intentando crear perfil con id:",
-								data.user.id,
-								"email:",
-								data.user.email,
-							);
 							const { error: insertError } = await supabase
 								.from("profiles")
-								.insert([{ id: data.user.id, email: data.user.email }]);
+								.insert([{ id: data.user.id, email: data.user.email, role: "user" }]);
 							if (insertError) {
 								console.error("Error creando perfil:", insertError.message);
 								alert(
 									"No se pudo crear el perfil en Supabase: " +
-										insertError.message,
+									insertError.message,
 								);
 							}
 						} else {
-							// Otro error: mostrar y no crear
 							console.warn("Error buscando perfil:", profileError.message);
 							alert(
 								"Error buscando perfil en Supabase: " + profileError.message,
 							);
 						}
 					}
-					// Si profile existe y no hay error, no hacer nada
 				} catch (err: any) {
 					console.error(
 						"Error inesperado creando perfil:",
@@ -76,12 +68,25 @@ export const useAuthStore = create<AuthState>(
 			}
 		},
 
-		register: async (email: string, password: string) => {
+		register: async (email: string, password: string, role: UserRole = "user") => {
 			set({ loading: true });
-			const { error } = await supabase.auth.signUp({ email, password });
+			let finalRole = role;
+			// Validar en backend: si ya existe admin, forzar rol a 'user'
+			if (role === "admin") {
+				const { data: admins } = await supabase.from("profiles").select("id").eq("role", "admin").limit(1);
+				if (admins && admins.length > 0) {
+					finalRole = "user";
+				}
+			}
+			const { data, error } = await supabase.auth.signUp({ email, password });
 			set({ loading: false });
 			if (error) throw error;
-			// No crear perfil aquí, solo tras login exitoso
+			// Crear perfil con rol si el registro fue exitoso
+			if (data.user) {
+				await supabase.from("profiles").insert([
+				  { id: data.user.id, email: data.user.email, role: finalRole }
+				]);
+			}
 		},
 
 		logout: async () => {

@@ -14,24 +14,42 @@ interface StudyCategoryProps {
 	onBack?: () => void;
 }
 
-const ICONS: Record<string, string> = {
-	"Accidente de Trabajo": "⚠️",
-	Emergencias: "🚨",
-	"Riesgos Químicos": "🧪",
-	"Riesgos Biológicos": "🦠",
-	"Riesgos Físicos": "💥",
-	"Riesgos Ergonómicos": "🧍",
-	"Riesgos Psicosociales": "🧠",
-	"Enfermedades Profesionales": "🏥",
-	"Equipos de Protección": "🦺",
-	Señalización: "🚧",
-	"Plan de Prevención": "📝",
-	Formación: "🎓",
-	"Vigilancia de la Salud": "🩺",
-	"Delegados de Prevención": "👷",
-	"Comité de Seguridad": "👥",
-	"Servicios de Prevención": "🏢",
-	"Ley 31/1995 LPRL": "📜",
+import {
+	FaGavel, FaClipboardCheck, FaHardHat, FaExclamationTriangle, FaUserShield, FaUsers, FaRegFileAlt, FaChalkboardTeacher, FaStethoscope, FaAmbulance, FaFireExtinguisher, FaFlask, FaBiohazard, FaBolt, FaCogs, FaBalanceScale, FaBaby, FaBuilding, FaHandshake, FaClock, FaBrain, FaBook, FaTools, FaSitemap, FaUserNurse
+} from "react-icons/fa";
+
+const categoryIcons: Record<string, JSX.Element> = {
+	"Ley 31/1995 LPRL": <FaGavel className="text-[#0C1F3D]" />,
+	"Evaluación de Riesgos": <FaClipboardCheck className="text-[#0C1F3D]" />,
+	"Equipos de Protección": <FaHardHat className="text-[#0C1F3D]" />,
+	"Señalización": <FaExclamationTriangle className="text-[#0C1F3D]" />,
+	"Delegados de Prevención": <FaUserShield className="text-[#0C1F3D]" />,
+	"Comité de Seguridad": <FaUsers className="text-[#0C1F3D]" />,
+	"Plan de Prevención": <FaRegFileAlt className="text-[#0C1F3D]" />,
+	"Formación": <FaChalkboardTeacher className="text-[#0C1F3D]" />,
+	"Servicios de Prevención": <FaStethoscope className="text-[#0C1F3D]" />,
+	"Accidente de Trabajo": <FaAmbulance className="text-[#0C1F3D]" />,
+	"Enfermedades Profesionales": <FaFireExtinguisher className="text-[#0C1F3D]" />,
+	"Riesgos Químicos": <FaFlask className="text-[#0C1F3D]" />,
+	"Riesgos Biológicos": <FaBiohazard className="text-[#0C1F3D]" />,
+	"Riesgos Físicos": <FaBolt className="text-[#0C1F3D]" />,
+	"Riesgos Ergonómicos": <FaCogs className="text-[#0C1F3D]" />,
+	"Riesgos Psicosociales": <FaBrain className="text-[#0C1F3D]" />,
+	"Incendios": <FaFireExtinguisher className="text-[#0C1F3D]" />,
+	"Primeros Auxilios": <FaAmbulance className="text-[#0C1F3D]" />,
+	"Lugares de Trabajo": <FaBuilding className="text-[#0C1F3D]" />,
+	"Trabajos Especiales": <FaTools className="text-[#0C1F3D]" />,
+	"Coordinación de Actividades": <FaSitemap className="text-[#0C1F3D]" />,
+	"Construcción": <FaHardHat className="text-[#0C1F3D]" />,
+	"Responsabilidades y Sanciones": <FaBalanceScale className="text-[#0C1F3D]" />,
+	"Vigilancia de la Salud": <FaUserNurse className="text-[#0C1F3D]" />,
+	"Emergencias": <FaExclamationTriangle className="text-[#0C1F3D]" />,
+	"Riesgos Eléctricos": <FaBolt className="text-[#0C1F3D]" />,
+	"Manipulación Manual de Cargas": <FaBuilding className="text-[#0C1F3D]" />,
+	"Trabajadoras Embarazadas": <FaBaby className="text-[#0C1F3D]" />,
+	"Subcontratación": <FaHandshake className="text-[#0C1F3D]" />,
+	"Trabajo a Turnos": <FaClock className="text-[#0C1F3D]" />,
+	"Cultura Preventiva": <FaBook className="text-[#0C1F3D]" />,
 };
 
 export default function StudyCategory({
@@ -41,7 +59,7 @@ export default function StudyCategory({
 }: StudyCategoryProps) {
 	const theory = THEORY[cat as keyof typeof THEORY] || [];
 	const numPractice = QUESTIONS.filter((q) => q.cat === cat).length;
-	const icon = ICONS[cat] || "📚";
+	const icon = categoryIcons[cat] || <FaBook className="text-[#0C1F3D]" />;
 	const user = useAuthStore((state) => state.user);
 	const appContext = useContext(AppContext);
 
