@@ -65,7 +65,7 @@ const SourceUpload: React.FC = () => {
         formData.append("type", "text");
         formData.append("rawText", rawText);
       }
-      const res = await fetch(`${getApiBase()}/ia/process-source`, {
+      const res = await fetch(`${getApiBase()}/api/ia/process-source`, {
         method: "POST",
         body: formData,
       });
@@ -120,7 +120,7 @@ const SourceUpload: React.FC = () => {
   // Utilidad para obtener la URL base del backend
   // Siempre usar la ruta relativa para que el proxy de Vite gestione la redirección
   const getApiBase = () => {
-    return "/api";
+    return import.meta.env.VITE_API_URL || "http://localhost:3001/api";
   };
 
   return (
