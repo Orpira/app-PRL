@@ -64,10 +64,25 @@ export default function App() {
 	const setUser = useAuthStore((state) => state.setUser);
 
 	// Restaurar sesión al montar la app
+
 	useEffect(() => {
-		 supabase.auth.getUser().then(({ data }) => {
+		supabase.auth.getUser().then(async ({ data }) => {
 			if (data?.user) {
-				setUser(data.user);
+				// Consultar perfil para obtener el rol
+				try {
+					const { data: profile } = await supabase
+						.from("profiles")
+						.select("id, email, role")
+						.eq("id", data.user.id)
+						.single();
+					if (profile) {
+						setUser({ ...data.user, role: profile.role || "user" });
+					} else {
+						setUser({ ...data.user, role: "user" });
+					}
+				} catch {
+					setUser({ ...data.user, role: "user" });
+				}
 				// Si la vista es welcome, login o register, ir a home
 				if (["welcome", "login", "register"].includes(view)) {
 					setView("home");

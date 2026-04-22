@@ -7,23 +7,55 @@ const SourceUpload: React.FC = () => {
   const [status, setStatus] = useState<string>("");
   const [iaResult, setIaResult] = useState<any>(null);
   const [rawText, setRawText] = useState("");
+  const [textPreview, setTextPreview] = useState<string>("");
+  const [error, setError] = useState<string>("");
 
   const inputRef = useRef<HTMLInputElement>(null);
   const [sourceName, setSourceName] = useState("");
   const [categories, setCategories] = useState<string[]>([]);
   const [saving, setSaving] = useState(false);
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    setError("");
+    setTextPreview("");
     if (e.target.files && e.target.files[0]) {
-      setFile(e.target.files[0]);
-      setType(e.target.files[0].type.includes("pdf") ? "pdf" : "json");
+      const f = e.target.files[0];
+      if (!f.type.includes("pdf") && !f.type.includes("json")) {
+        setError("Solo se permiten archivos PDF o JSON.");
+        setFile(null);
+        return;
+      }
+      if (f.size > 20 * 1024 * 1024) {
+        setError("El archivo supera el límite de 20MB.");
+        setFile(null);
+        return;
+      }
+      setFile(f);
+      setType(f.type.includes("pdf") ? "pdf" : "json");
+      // Vista previa básica
+      const reader = new FileReader();
+      reader.onload = (ev) => {
+        const content = ev.target?.result;
+        if (typeof content === "string") {
+          setTextPreview(content.slice(0, 1000));
+        }
+      };
+      if (f.type.includes("pdf")) {
+        setTextPreview("Vista previa no disponible para PDF. Se extraerá el texto tras subir.");
+      } else {
+        reader.readAsText(f);
+      }
     }
   };
 
   const handleUpload = async () => {
     setStatus("");
+    setError("");
     setIaResult(null);
-    if (!file && !rawText) return;
+    if (!file && !rawText) {
+      setError("Debes seleccionar un archivo o ingresar texto.");
+      return;
+    }
     setStatus("Procesando...");
     try {
       const formData = new FormData();
@@ -34,19 +66,22 @@ const SourceUpload: React.FC = () => {
         formData.append("type", "text");
         formData.append("rawText", rawText);
       }
-      const res = await fetch(`${getApiBase()}/api/ia/process-source`, {
+      const res = await fetch(`${getApiBase()}/ia/process-source`, {
         method: "POST",
         body: formData,
       });
       const data = await res.json();
       if (res.ok) {
         setIaResult(data.ia);
+        setTextPreview(data.text?.slice(0, 1000) || "");
         setStatus("¡Fuente subida y procesada!");
       } else {
-        setStatus(data.error || "Error procesando la fuente");
+        setError(data.error || "Error procesando la fuente");
+        setStatus("");
       }
     } catch (err) {
-      setStatus("Error de red o de servidor");
+      setError("Error de red o de servidor");
+      setStatus("");
     }
   };
 
@@ -59,24 +94,32 @@ const SourceUpload: React.FC = () => {
           const parsed = JSON.parse(content);
           setCategories(Object.keys(parsed));
         }
-      } catch {}
+      } catch (e) {
+        setError("No se pudieron extraer las categorías del resultado IA.");
+      }
     }
   }, [iaResult]);
 
   const handleSave = async () => {
     setSaving(true);
-    // Guardar en Supabase (tabla sources)
-    await supabase.from("sources").insert([
-      {
-        name: sourceName || (file ? file.name : "Fuente sin nombre"),
-        type: file ? type : "text",
-        categories,
-        uploaded_by: "admin", // Aquí puedes usar el id del usuario logueado
-        created_at: new Date().toISOString(),
-        file_url: null, // Si implementas almacenamiento de archivos
-        text: iaResult?.text || rawText,
-      },
-    ]);
+    setError("");
+    try {
+      // Guardar en Supabase (tabla sources)
+      await supabase.from("sources").insert([
+        {
+          name: sourceName || (file ? file.name : "Fuente sin nombre"),
+          type: file ? type : "text",
+          categories,
+          uploaded_by: "admin", // Aquí puedes usar el id del usuario logueado
+          created_at: new Date().toISOString(),
+          file_url: null, // Si implementas almacenamiento de archivos
+          text: iaResult?.text || rawText,
+        },
+      ]);
+      setStatus("¡Fuente guardada!");
+    } catch (e) {
+      setError("Error guardando la fuente en la base de datos.");
+    }
     setSaving(false);
     setStatus("¡Fuente guardada!");
     setFile(null);
@@ -87,13 +130,9 @@ const SourceUpload: React.FC = () => {
   };
 
   // Utilidad para obtener la URL base del backend
+  // Siempre usar la ruta relativa para que el proxy de Vite gestione la redirección
   const getApiBase = () => {
-    // Si está en Codespaces, usar la URL pública
-    if (window.location.hostname.endsWith("github.dev")) {
-      return "https://obscure-chainsaw-x55gx67pjpw5f66jr.github.dev";
-    }
-    // Si está en local, usar localhost:3001
-    return "http://localhost:3001";
+    return "/api";
   };
 
   return (
@@ -105,6 +144,7 @@ const SourceUpload: React.FC = () => {
         accept=".pdf,application/json"
         onChange={handleFileChange}
         className="mb-2"
+        disabled={saving}
       />
       <div className="mb-2 text-sm text-gray-700">O pega texto manualmente:</div>
       <textarea
@@ -113,18 +153,26 @@ const SourceUpload: React.FC = () => {
         placeholder="Pega aquí el texto si no tienes archivo"
         value={rawText}
         onChange={(e) => setRawText(e.target.value)}
+        disabled={saving}
       />
+      {error && <div className="mb-2 text-red-700">{error}</div>}
       {file && (
         <div className="mb-2 text-sm text-gray-700">
           Archivo: <b>{file.name}</b> ({type.toUpperCase()})
         </div>
       )}
+      {textPreview && (
+        <div className="mb-2 text-xs bg-gray-100 border rounded p-2">
+          <b>Vista previa del texto extraído:</b>
+          <div className="whitespace-pre-wrap max-h-40 overflow-y-auto">{textPreview}</div>
+        </div>
+      )}
       <button
         className="bg-blue-700 text-white px-4 py-2 rounded"
         onClick={handleUpload}
-        disabled={!file && !rawText}
+        disabled={(!file && !rawText) || saving || status === "Procesando..."}
       >
-        Subir y procesar
+        {status === "Procesando..." ? "Procesando..." : "Subir y procesar"}
       </button>
       {status && <div className="mt-2 text-green-700">{status}</div>}
       {iaResult && (
@@ -137,6 +185,7 @@ const SourceUpload: React.FC = () => {
               value={sourceName}
               onChange={e => setSourceName(e.target.value)}
               placeholder="Ej: Normativa PRL 2024"
+              disabled={saving}
             />
           </div>
           <div className="mb-2">
@@ -146,6 +195,7 @@ const SourceUpload: React.FC = () => {
               value={categories.join(", ")}
               onChange={e => setCategories(e.target.value.split(",").map(c => c.trim()))}
               placeholder="Ej: Normativa, Riesgos, Evaluación"
+              disabled={saving}
             />
           </div>
           <details>
