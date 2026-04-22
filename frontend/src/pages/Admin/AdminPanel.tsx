@@ -1,6 +1,6 @@
 import React from "react";
 import SourceUpload from "./SourceUpload";
-import SourceList from "./SourceList";
+import SourceManager from "./SourceManager";
 import UserManager from "./UserManager";
 
 const AdminPanel: React.FC = () => {
@@ -18,7 +18,7 @@ const AdminPanel: React.FC = () => {
         <>
           <SourceUpload />
           <hr className="my-6" />
-          <SourceList />
+          <SourceManager />
         </>
       )}
       {tab === "users" && <UserManager />}

@@ -11,8 +11,6 @@ const SourceUpload: React.FC = () => {
   const [error, setError] = useState<string>("");
 
   const inputRef = useRef<HTMLInputElement>(null);
-  const [sourceName, setSourceName] = useState("");
-  const [categories, setCategories] = useState<string[]>([]);
   const [saving, setSaving] = useState(false);
 
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -48,6 +46,7 @@ const SourceUpload: React.FC = () => {
     }
   };
 
+  // Recibe una prop opcional para refrescar la lista tras subir
   const handleUpload = async () => {
     setStatus("");
     setError("");
@@ -75,6 +74,8 @@ const SourceUpload: React.FC = () => {
         setIaResult(data.ia);
         setTextPreview(data.text?.slice(0, 1000) || "");
         setStatus("¡Fuente subida y procesada!");
+        // Refrescar lista si se pasa prop
+        if (typeof window.refreshSources === "function") window.refreshSources();
       } else {
         setError(data.error || "Error procesando la fuente");
         setStatus("");
@@ -85,20 +86,7 @@ const SourceUpload: React.FC = () => {
     }
   };
 
-  React.useEffect(() => {
-    if (iaResult && iaResult.choices) {
-      try {
-        // Intentar extraer categorías del JSON IA
-        const content = iaResult.choices[0]?.message?.content;
-        if (content) {
-          const parsed = JSON.parse(content);
-          setCategories(Object.keys(parsed));
-        }
-      } catch (e) {
-        setError("No se pudieron extraer las categorías del resultado IA.");
-      }
-    }
-  }, [iaResult]);
+  // Eliminar lógica de categorías, solo mostrar IA si existe
 
   const handleSave = async () => {
     setSaving(true);
