@@ -47,6 +47,8 @@ import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Navbar from "./components/NavBar";
 import Footer from "./components/Footer";
+import SourceUpload from "./pages/Admin/SourceUpload";
+import SourceManager from "./pages/Admin/SourceManager";
 
 export default function App() {
 	const [view, setView] = useState("welcome");
@@ -135,7 +137,7 @@ export default function App() {
 				<div className="flex h-screen">
 					{/* Sidebar solo para usuarios autenticados */}
 					{user && <Sidebar view={view} setView={setView} />}
-					<main className="main">
+					<main className="main">						
 						{view === "home" && <Home />}
 						{/* Modo explorar: solo 4 temas y sin IA */}
 						{view === "study" && !user && (
@@ -205,6 +207,13 @@ export default function App() {
 						{/* Asistente IA solo para usuarios autenticados */}
 						{view === "chat" && user && <Chat />}
 						{view === "stats" && <Stats />}
+						{view === "sources" && (
+							<div className="p-4">
+								<h2 className="text-xl font-bold mb-4">Gestión de Fuentes IA</h2>
+								<SourceUpload />
+								<SourceManager />
+							</div>
+						)}
 						{/* Panel de administración solo para admins */}
 						{view === "admin" && user?.role === "admin" && (
 							<AdminRouteGuard>

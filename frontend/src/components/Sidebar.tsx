@@ -1,4 +1,13 @@
 import { useState } from "react";
+import {
+	TbHome,
+	TbBook2,
+	TbListCheck,
+	TbMessageChatbot,
+	TbChartBar,
+	TbBooks,
+	TbSettings,
+} from "react-icons/tb";
 import { useAuthStore } from "../store/useAuthStore";
 
 interface Props {
@@ -9,18 +18,21 @@ interface Props {
 export default function Sidebar({ view, setView }: Props) {
 	const user = useAuthStore((state) => state.user);
 	const items = [
-		{ id: "home", label: "Inicio", icon: "▤" },
-		{ id: "study", label: "Modo Estudio", icon: "◈" },
-		{ id: "exam", label: "Examen", icon: "◉" },
-		{ id: "chat", label: "Asistente IA", icon: "◎" },
-		{ id: "stats", label: "Estadísticas", icon: "◍" },
+		{ id: "home", label: "Inicio", icon: <TbHome size={22} /> },
+		{ id: "study", label: "Modo Estudio", icon: <TbBook2 size={22} /> },
+		{ id: "exam", label: "Examen", icon: <TbListCheck size={22} /> },
+		{ id: "chat", label: "Asistente IA", icon: <TbMessageChatbot size={22} /> },
+		{ id: "stats", label: "Estadísticas", icon: <TbChartBar size={22} /> },
+		{ id: "sources", label: "Fuentes IA", icon: <TbBooks size={22} /> },
 		// Solo admins pueden ver el panel de administración
 		...(user?.role === "admin"
-			? [{ id: "admin", label: "Administración", icon: "⚙️" }]
+			? [{ id: "admin", label: "Administración", icon: <TbSettings size={22} /> }]
 			: []),
 	];
 
 	const [open, setOpen] = useState(false);
+	const [collapsed, setCollapsed] = useState(false);
+
 
 	// Sidebar para desktop
 	const sidebarContent = (
@@ -30,20 +42,40 @@ export default function Sidebar({ view, setView }: Props) {
 					<div
 						key={item.id}
 						onClick={() => setView(item.id)}
-						className={`nav-item${view === item.id ? " active" : ""}`}
+						className={`nav-item flex items-center gap-3 px-4 py-2.5 text-white/80 hover:bg-white/10 cursor-pointer transition-all ${view === item.id ? "active bg-white/10" : ""}`}
+						title={collapsed ? item.label : undefined}
 					>
-						<span>{item.icon}</span> {item.label}
+						<span className="text-xl">{item.icon}</span>
+						{!collapsed && <span className="ml-1 text-sm font-medium">{item.label}</span>}
 					</div>
 				))}
 			</div>
-			<div className="sidebar-footer">Ley 31/1995 LPRL · v1.0</div>
+			<div className="sidebar-footer">
+				{!collapsed && "Ley 31/1995 LPRL · v1.0"}
+			</div>
 		</>
 	);
 
 	return (
 		<>
-			{/* Sidebar fija en desktop */}
-			<div className="sidebar h-screen hidden md:flex">
+			{/* Sidebar fija en desktop, colapsable */}
+			<div className={`sidebar h-screen hidden md:flex flex-col transition-all duration-300 ${collapsed ? "w-16 min-w-[56px]" : "w-56 min-w-[200px]"}`}>
+				<button
+					className="mt-3 mb-2 ml-auto mr-2 p-1 rounded hover:bg-white/10 text-white/60"
+					onClick={() => setCollapsed((v) => !v)}
+					aria-label={collapsed ? "Expandir menú" : "Colapsar menú"}
+					title={collapsed ? "Expandir menú" : "Colapsar menú"}
+				>
+					<svg width="22" height="22" fill="none" viewBox="0 0 24 24">
+						<path
+							stroke="currentColor"
+							strokeWidth="2"
+							strokeLinecap="round"
+							strokeLinejoin="round"
+							d={collapsed ? "M9 6l6 6-6 6" : "M15 6l-6 6 6 6"}
+						/>
+					</svg>
+				</button>
 				{sidebarContent}
 			</div>
 
@@ -95,9 +127,10 @@ export default function Sidebar({ view, setView }: Props) {
 										setView(item.id);
 										setOpen(false);
 									}}
-									className={`nav-item${view === item.id ? " active" : ""}`}
+									className={`nav-item flex items-center gap-3 px-4 py-2.5 text-white/80 hover:bg-white/10 cursor-pointer transition-all ${view === item.id ? "active bg-white/10" : ""}`}
 								>
-									<span>{item.icon}</span> {item.label}
+									<span className="text-xl">{item.icon}</span>
+									<span className="ml-1 text-sm font-medium">{item.label}</span>
 								</div>
 							))}
 							<div className="sidebar-footer mt-auto">Ley 31/1995 LPRL · v1.0</div>

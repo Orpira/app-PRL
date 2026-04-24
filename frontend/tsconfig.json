@@ -1,5 +1,12 @@
 {
   "files": [],
+  "compilerOptions": {
+    "types": ["node"],
+    "lib": ["ES2022"],
+    "moduleResolution": "node",
+    "esModuleInterop": true,
+    "ignoreDeprecations": "6.0"
+  },
   "references": [
     { "path": "./tsconfig.app.json" },
     { "path": "./tsconfig.node.json" }

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import Quiz from "./components/Quiz";
+import Quiz from "./components/QuizPlayer";
 
 export default function SourceUpload() {
   const [file, setFile] = useState<File | null>(null);
@@ -8,6 +8,7 @@ export default function SourceUpload() {
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<any>(null);
   const [error, setError] = useState("");
+  const [response, setResponse] = useState<any>(null);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const selected = e.target.files?.[0];
@@ -30,7 +31,7 @@ export default function SourceUpload() {
 
       if (type === "text") {
         // envío JSON
-        response = await fetch("http://localhost:3001/api/ia/process-source", {
+        response = await fetch("/api/process-source", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -46,10 +47,13 @@ export default function SourceUpload() {
         if (file) formData.append("file", file);
         formData.append("type", type);
 
-        response = await fetch("http://localhost:3001/api/ia/process-source", {
+        response = await fetch("/api/process-source", {
           method: "POST",
           body: formData,
         });
+        if (window.refreshSources) {
+          window.refreshSources();
+      }
       }
 
       const data = await response.json();

@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { supabase } from "../../shared/lib/supabase";
+import QuizPlayer from "../../components/QuizPlayer";
 
 interface Source {
   id: string;
@@ -15,6 +16,7 @@ const SourceManager: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [deleting, setDeleting] = useState<string | null>(null);
+  const [activeQuiz, setActiveQuiz] = useState<any>(null);
 
   const fetchSources = async () => {
     setLoading(true);
@@ -44,11 +46,17 @@ const SourceManager: React.FC = () => {
     return () => { delete window.refreshSources; };
   }, []);
 
+  const normalizeQuiz = (data: any) => {
+  if (Array.isArray(data)) return data[0];
+  return data;
+};
+
   return (
     <div>
       <h2>Archivos Ingeridos</h2>
       {loading && <p>Cargando...</p>}
       {error && <p style={{ color: "red" }}>{error}</p>}
+      {!activeQuiz && (
       <table style={{ width: "100%", borderCollapse: "collapse" }}>
         <thead>
           <tr>
@@ -68,6 +76,14 @@ const SourceManager: React.FC = () => {
                 <button onClick={() => handleDelete(src.id)} disabled={deleting === src.id}>
                   {deleting === src.id ? "Eliminando..." : "Eliminar"}
                 </button>
+                <button
+                  onClick={() => {
+                    const quiz = normalizeQuiz(src.ia_result);
+                    setActiveQuiz(quiz);
+                  }}
+                >
+                  Iniciar Quiz
+                </button>
                 <details>
                   <summary>Ver contenido</summary>
                   <pre style={{ maxWidth: 400, maxHeight: 200, overflow: "auto" }}>{src.content}</pre>
@@ -76,13 +92,23 @@ const SourceManager: React.FC = () => {
                       <strong>Resultado IA:</strong>
                       <pre style={{ maxWidth: 400, maxHeight: 200, overflow: "auto" }}>{JSON.stringify(src.ia_result, null, 2)}</pre>
                     </>
-                  )}
+                  )}                  
                 </details>
               </td>
             </tr>
           ))}
         </tbody>
       </table>
+      )}
+      {activeQuiz && (
+        <div>
+          <h3>Quiz Activo</h3>
+          <QuizPlayer quiz={activeQuiz} />
+          <button onClick={() => setActiveQuiz(null)}>
+            Cerrar Quiz
+          </button>
+        </div>
+      )}
     </div>
   );
 };

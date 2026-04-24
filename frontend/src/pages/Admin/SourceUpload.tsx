@@ -1,7 +1,16 @@
+
+// Extiende la interfaz Window para incluir refreshSources
+declare global {
+  interface Window {
+    refreshSources?: () => void;
+  }
+}
+
 import React, { useRef, useState } from "react";
 import { supabase } from "../../shared/lib/supabase";
 
 const SourceUpload: React.FC = () => {
+
   const [file, setFile] = useState<File | null>(null);
   const [type, setType] = useState<string>("");
   const [status, setStatus] = useState<string>("");
@@ -9,6 +18,8 @@ const SourceUpload: React.FC = () => {
   const [rawText, setRawText] = useState("");
   const [textPreview, setTextPreview] = useState<string>("");
   const [error, setError] = useState<string>("");
+  const [sourceName, setSourceName] = useState<string>("");
+  const [categories, setCategories] = useState<string[]>([]);
 
   const inputRef = useRef<HTMLInputElement>(null);
   const [saving, setSaving] = useState(false);
@@ -65,7 +76,7 @@ const SourceUpload: React.FC = () => {
         formData.append("type", "text");
         formData.append("rawText", rawText);
       }
-      const res = await fetch(`${getApiBase()}/api/ia/process-source`, {
+      const res = await fetch(`${getApiBase()}/api/process-source`, {
         method: "POST",
         body: formData,
       });
@@ -97,11 +108,10 @@ const SourceUpload: React.FC = () => {
         {
           name: sourceName || (file ? file.name : "Fuente sin nombre"),
           type: file ? type : "text",
-          categories,
+          content: rawText,
           uploaded_by: "admin", // Aquí puedes usar el id del usuario logueado
           created_at: new Date().toISOString(),
-          file_url: null, // Si implementas almacenamiento de archivos
-          text: iaResult?.text || rawText,
+          ia_result: iaResult?.text || rawText,
         },
       ]);
       setStatus("¡Fuente guardada!");

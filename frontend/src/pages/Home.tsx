@@ -131,70 +131,70 @@ export default function Home() {
 				<div className="page-sub mb-6">
 					Curso Básico de Prevención de Riesgos Laborales — Ley 31/1995
 				</div>
-								<div className="grid grid-cols-2 md:grid-cols-4 gap-2.5 mb-6">
-										<div className="stat-card">
-												<div className="stat-num">{stats.preguntas}</div>
-												<div className="stat-label">Preguntas</div>
-										</div>
-										<div className="stat-card">
-												<div className="stat-num">{stats.examenes}</div>
-												<div className="stat-label">Exámenes realizados</div>
-										</div>
-										<div className="stat-card">
-												<div className="stat-num">{stats.media}%</div>
-												<div className="stat-label">Puntuación media</div>
-										</div>
-										<div className="stat-card">
-												<div className="stat-num">{stats.mejor}%</div>
-												<div className="stat-label">Mejor resultado</div>
-										</div>
-								</div>
+								 <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+									 <div className="card group flex flex-col items-center py-6 transition-transform hover:scale-[1.03] hover:shadow-lg dark:bg-card dark:border-none">
+										 <div className="stat-num text-3xl font-bold text-accent mb-1 transition-colors group-hover:text-[#1B3A6B] dark:group-hover:text-[#4F8CFF]">{stats.preguntas}</div>
+										 <div className="stat-label text-xs text-muted">Preguntas</div>
+									 </div>
+									 <div className="card group flex flex-col items-center py-6 transition-transform hover:scale-[1.03] hover:shadow-lg dark:bg-card dark:border-none">
+										 <div className="stat-num text-3xl font-bold text-accent mb-1 transition-colors group-hover:text-[#1B3A6B] dark:group-hover:text-[#4F8CFF]">{stats.examenes}</div>
+										 <div className="stat-label text-xs text-muted">Exámenes realizados</div>
+									 </div>
+									 <div className="card group flex flex-col items-center py-6 transition-transform hover:scale-[1.03] hover:shadow-lg dark:bg-card dark:border-none">
+										 <div className="stat-num text-3xl font-bold text-accent mb-1 transition-colors group-hover:text-[#1B3A6B] dark:group-hover:text-[#4F8CFF]">{stats.media}%</div>
+										 <div className="stat-label text-xs text-muted">Puntuación media</div>
+									 </div>
+									 <div className="card group flex flex-col items-center py-6 transition-transform hover:scale-[1.03] hover:shadow-lg dark:bg-card dark:border-none">
+										 <div className="stat-num text-3xl font-bold text-accent mb-1 transition-colors group-hover:text-[#1B3A6B] dark:group-hover:text-[#4F8CFF]">{stats.mejor}%</div>
+										 <div className="stat-label text-xs text-muted">Mejor resultado</div>
+									 </div>
+								 </div>
 
 
-								<div className="mb-8">
-									<div className="mb-2 font-medium text-center">Accesos rápidos</div>
-									<div className="flex flex-col gap-2 max-w-xs mx-auto items-center">
-										<button
-											className="btn btn-primary w-full"
-											onClick={() => appContext?.setView("study")}
-										>
-											Iniciar modo estudio
-										</button>
-										<button className="btn btn-gold w-full" onClick={handleExamClick}>
-											Realizar examen
-										</button>
-										<button
-											className="btn btn-outline w-full"
-											onClick={() => {
-												if (!user) {
-													localStorage.removeItem("exam_results_local");
-													setGuestStats({ examenes: 0, media: 0, mejor: 0 });
-												} else {
-													alert("Funcionalidad de reset para usuarios registrados no implementada. Ve a la pantalla de estadísticas para resetear tus datos.");
-												}
-											}}
-										>
-											Resetear estadísticas
-										</button>
-										{user && (
-											<button
-												className="btn w-full"
-												onClick={() => appContext?.setView("chat")}
-											>
-												Consultar al asistente IA
-											</button>
-										)}
-										{/* Botón para regresar a welcome solo en modo demo */}
-										{!user && (
-											<button
-												className="btn btn-outline mt-2 w-full"
-												onClick={() => appContext?.setView("welcome")}
-											>
-												Volver al inicio
-											</button>
-										)}
-									</div>
-								</div>
+								 <div className="mb-8">
+									 <div className="mb-3 font-semibold text-center text-base tracking-tight">Accesos rápidos</div>
+									 <div className="flex flex-col gap-3 max-w-xs mx-auto items-center">
+										 <button
+											 className="btn btn-primary w-full shadow-sm hover:shadow-md transition"
+											 onClick={() => appContext?.setView("study")}
+										 >
+											 Iniciar modo estudio
+										 </button>
+										 <button className="btn btn-gold w-full shadow-sm hover:shadow-md transition" onClick={handleExamClick}>
+											 Realizar examen
+										 </button>
+										 <button
+											 className="btn btn-outline w-full shadow-sm hover:shadow-md transition"
+											 onClick={() => {
+												 if (!user) {
+													 localStorage.removeItem("exam_results_local");
+													 setGuestStats({ examenes: 0, media: 0, mejor: 0 });
+												 } else {
+													 alert("Funcionalidad de reset para usuarios registrados no implementada. Ve a la pantalla de estadísticas para resetear tus datos.");
+												 }
+											 }}
+										 >
+											 Resetear estadísticas
+										 </button>
+										 {user && (
+											 <button
+												 className="btn w-full shadow-sm hover:shadow-md transition"
+												 onClick={() => appContext?.setView("chat")}
+											 >
+												 Consultar al asistente IA
+											 </button>
+										 )}
+										 {/* Botón para regresar a welcome solo en modo demo */}
+										 {!user && (
+											 <button
+												 className="btn btn-outline mt-2 w-full shadow-sm hover:shadow-md transition"
+												 onClick={() => appContext?.setView("welcome")}
+											 >
+												 Volver al inicio
+											 </button>
+										 )}
+									 </div>
+								 </div>
 			</div>
 
 			{/* Temario a la derecha */}
@@ -202,19 +202,27 @@ export default function Home() {
 				<div className="mb-2 font-medium">
 					Temario ({categorias.length} categorías)
 				</div>
-				<div className="flex flex-wrap gap-2 max-h-[420px] overflow-y-auto pr-2">
-					{categorias.map((cat, i) =>
-						!user && i >= 4 ? null : (
-							<span
-								key={cat}
-								className="inline-flex items-center gap-2 px-2 py-1 rounded bg-gray-100 text-xs text-gray-800 border border-gray-200"
-								title={cat}
-							>
-								{categoryIcons[cat] || <FaBook className="text-[#0C1F3D]" />} {cat}
-							</span>
-						),
-					)}
-				</div>
+							 <div className="flex flex-wrap gap-3 max-h-[420px] overflow-y-auto pr-2">
+								 {categorias.map((cat, i) =>
+									 !user && i >= 4 ? null : (
+										 <div
+											 key={cat}
+											 className="cat-card group flex items-center gap-3 min-w-[180px] max-w-full bg-white dark:bg-card border border-gray-200 dark:border-[#23262F] rounded-xl p-3 cursor-pointer transition-all hover:shadow-md hover:border-accent dark:hover:border-accent focus:outline-none focus:ring-2 focus:ring-accent"
+											 tabIndex={0}
+											 title={cat}
+											 role="button"
+											 aria-label={cat}
+										 >
+											 <span className="text-xl group-hover:scale-110 transition-transform">
+												 {categoryIcons[cat] || <FaBook className="text-[#0C1F3D] dark:text-accent" />}
+											 </span>
+											 <span className="text-sm font-medium text-gray-800 dark:text-gray-100 truncate">
+												 {cat}
+											 </span>
+										 </div>
+									 ),
+								 )}
+							 </div>
 			</div>
 		</div>
 	);
